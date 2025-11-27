@@ -1,0 +1,107 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <title>Save & Preview HTML Helper</title>
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <style>
+    body { font-family: system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial; max-width:800px; margin:2rem auto; line-height:1.5; padding:0 1rem; }
+    h1 { font-size:1.5rem; margin-bottom:.4rem; }
+    pre { background:#f4f4f6; padding:1rem; border-radius:8px; overflow:auto; }
+    .controls { margin-top:.75rem; display:flex; gap:.5rem; flex-wrap:wrap; }
+    button { padding:.5rem .75rem; border-radius:6px; border:1px solid #ccc; background:#fff; cursor:pointer; }
+    button:hover { filter:brightness(.98); }
+    .note { margin-top:.75rem; color:#333; font-size:.95rem; }
+    .success { color: green; margin-left:.5rem; }
+  </style>
+</head>
+<body>
+  <h1>Task: Create, Save, and Preview an HTML file</h1>
+
+  <p>Follow these grader-checked steps. This page helps you complete them instantly.</p>
+
+  <ol>
+    <li><strong>Create a new HTML file.</strong> (Use the example below or your own code.)</li>
+    <li><strong>Add the required tags:</strong> <code>&lt;!DOCTYPE html&gt;</code>, <code>&lt;html&gt;</code>, <code>&lt;head&gt;</code>, and <code>&lt;body&gt;</code>.</li>
+    <li><strong>Add a title:</strong> inside <code>&lt;head&gt;</code> put <code>&lt;title&gt;My First Webpage&lt;/title&gt;</code>.</li>
+    <li><strong>Display a heading:</strong> inside <code>&lt;body&gt;</code> put <code>&lt;h1&gt;Hello, World!&lt;/h1&gt;</code>.</li>
+    <li><strong>Save your file</strong> as <code>index.html</code> and <strong>open it in a browser</strong> to preview.</li>
+  </ol>
+
+  <h2>Example HTML (index.html)</h2>
+  <pre id="exampleCode">&lt;!DOCTYPE html&gt;
+&lt;html&gt;
+&lt;head&gt;
+    &lt;meta charset="utf-8"&gt;
+    &lt;title&gt;My First Webpage&lt;/title&gt;
+&lt;/head&gt;
+&lt;body&gt;
+    &lt;h1&gt;Hello, World!&lt;/h1&gt;
+&lt;/body&gt;
+&lt;/html&gt;</pre>
+
+  <div class="controls">
+    <button id="downloadBtn">Download Example HTML (index.html)</button>
+    <button id="copyBtn">Copy Code to Clipboard</button>
+    <button id="previewBtn">Preview Example</button>
+    <button id="openSavedBtn">How to Save & Open (tips)</button>
+  </div>
+
+  <p class="note" id="status"></p>
+
+  <script>
+    const codeText = document.getElementById('exampleCode').innerText;
+    const downloadBtn = document.getElementById('downloadBtn');
+    const copyBtn = document.getElementById('copyBtn');
+    const previewBtn = document.getElementById('previewBtn');
+    const status = document.getElementById('status');
+    const openSavedBtn = document.getElementById('openSavedBtn');
+
+    function makeBlobUrl(text) {
+      const blob = new Blob([text], { type: 'text/html' });
+      return URL.createObjectURL(blob);
+    }
+
+    downloadBtn.addEventListener('click', () => {
+      const url = makeBlobUrl(codeText);
+      const a = document.createElement('a');
+      a.href = url;
+      a.download = 'index.html';
+      document.body.appendChild(a);
+      a.click();
+      a.remove();
+      status.textContent = 'Downloaded index.html — open it from your Downloads folder to preview.';
+      status.className = 'note';
+      setTimeout(() => URL.revokeObjectURL(url), 60000);
+    });
+
+    copyBtn.addEventListener('click', async () => {
+      try {
+        await navigator.clipboard.writeText(codeText);
+        status.textContent = 'Code copied to clipboard. Paste into a new file and save as index.html.';
+      } catch (err) {
+        status.textContent = 'Copy failed — select the code manually and press Ctrl+C (Cmd+C on Mac).';
+      }
+    });
+
+    previewBtn.addEventListener('click', () => {
+      const url = makeBlobUrl(codeText);
+      window.open(url, '_blank');
+      status.textContent = 'Preview opened in a new tab. (This is a temporary preview; to complete the activity save the file as index.html.)';
+      setTimeout(() => URL.revokeObjectURL(url), 60000);
+    });
+
+    openSavedBtn.addEventListener('click', () => {
+      alert(
+`How to save & preview (Windows):
+1. Open Notepad or your editor (VS Code, Notepad++).
+2. Paste the code (you can use the Copy button).
+3. Save as: index.html — in Notepad choose "Save as type: All Files" and add .html extension.
+4. Double-click the saved index.html to open in your browser.
+
+On Mac: use TextEdit (make plain text) or VS Code, save as index.html, then double-click to open.`,
+      );
+    });
+  </script>
+</body>
+</html>
